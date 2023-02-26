@@ -44,13 +44,13 @@ const testData: ColumnProps[] = [
 ]
 
 // GlobalHeader模拟数据
-const currentUser: UserProps = {
-  isLogin: false
-}
 // const currentUser: UserProps = {
-//   isLogin: true,
-//   name: 'luminous'
+//   isLogin: false
 // }
+const currentUser: UserProps = {
+  isLogin: true,
+  name: 'luminous'
+}
 export default defineComponent({
   name: 'App',
   components: {
