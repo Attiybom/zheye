@@ -2,7 +2,7 @@
   <div class="container">
     <GlobalHeader :user="currentUser" />
     <!-- <ColumnList :list="list" /> -->
-    <validate-form action="">
+    <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="exampleFormControlInput0" class="form-label">邮箱地址</label>
         <ValidateInput
@@ -11,6 +11,7 @@
           v-model="emailVal"
           placeholder="请输入邮箱地址，格式如name@example.com"
           type="text"
+          ref="inputRef"
         />
         <span>{{ emailVal }}</span>
       </div>
@@ -90,25 +91,39 @@ export default defineComponent({
   setup() {
     const list = testData
     // email
-    const emailVal = ref('luminous')
-    const emailRules: RulesProp = [
-      { type: 'required', message: '电子邮箱地址不能为空' },
-      { type: 'email', message: '请输入正确的电子邮箱' }
-    ]
+    const emailVal = ref('abc@163.com')
+    const emailRules: RulesProp = [{ type: 'required', message: '电子邮箱地址不能为空' }]
 
     //password
-    const passwordVal = ref('')
+    const passwordVal = ref('testPassword')
     const passwordRules: RulesProp = [
       { type: 'required', message: '密码不能为空' },
       { type: 'password', message: '请输入正确的密码格式' }
     ]
+
+    //获取input组件实例
+    const inputRef = ref<any>()
+
+    //form-submit
+    function onFormSubmit(result: boolean) {
+      console.info('inputRef-result', result)
+      if (!result) {
+        console.info('hello')
+        emailVal.value = '66'
+        passwordVal.value = '667'
+        console.info('hi')
+      }
+    }
+
     return {
       list,
       currentUser,
       emailRules,
       emailVal,
       passwordVal,
-      passwordRules
+      passwordRules,
+      onFormSubmit,
+      inputRef
     }
   }
 })
