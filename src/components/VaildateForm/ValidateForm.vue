@@ -28,6 +28,7 @@ export default defineComponent({
       context.emit('form-submit', result) // 发送结果
     }
     function VaildateFormCallback(func: ValidateFunc) {
+      console.info('sssss')
       if (func) {
         funcArr.push(func)
       }

@@ -69,8 +69,10 @@ export default defineComponent({
     function onFormSubmit(result: boolean) {
       console.info('inputRef-result', result)
       if (result) {
-        router.push('/')
         store.commit('updateLoginState')
+        console.info('login!')
+        router.push('/')
+        console.info(store.state.user)
       } else {
         console.info('hello')
         emailVal.value = '66'
