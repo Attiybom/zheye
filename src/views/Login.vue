@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <!-- <ColumnList :list="list" /> -->
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label for="exampleFormControlInput0" class="form-label">邮箱地址</label>
@@ -33,12 +32,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import ColumnList, { ColumnProps } from '@/components/ColumnList.vue'
 import ValidateForm from '@/components/VaildateForm/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/VaildateForm/ValidateInput.vue'
-import { testData } from '@/mock/mock'
 
 export default defineComponent({
   name: 'App',
@@ -48,7 +47,10 @@ export default defineComponent({
     ValidateForm
   },
   setup() {
-    const list = testData
+    //获取信息
+    const store = useStore()
+    //路由跳转
+    const router = useRouter()
     // email
     const emailVal = ref('abc@163.com')
     const emailRules: RulesProp = [
@@ -66,7 +68,10 @@ export default defineComponent({
     //form-submit
     function onFormSubmit(result: boolean) {
       console.info('inputRef-result', result)
-      if (!result) {
+      if (result) {
+        router.push('/')
+        store.commit('updateLoginState')
+      } else {
         console.info('hello')
         emailVal.value = '66'
         passwordVal.value = '667'
@@ -75,7 +80,6 @@ export default defineComponent({
     }
 
     return {
-      list,
       emailRules,
       emailVal,
       passwordVal,

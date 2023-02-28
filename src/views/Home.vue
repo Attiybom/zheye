@@ -17,16 +17,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import ColumnList from '../components/ColumnList'
-import { testData } from '../mock/mock.ts'
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store/store'
+import ColumnList from '@/components/Column/ColumnList.vue'
+
 export default defineComponent({
   name: 'ValidateInput',
   components: {
     ColumnList
   },
   setup() {
-    const list = testData
+    const store = useStore<GlobalDataProps>()
+    const list = computed(() => store.state.columns)
     return {
       list
     }

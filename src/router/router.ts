@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// login
 const LoginView = () => import('@/views/Login.vue')
-// home
 const HomeView = () => import('@/views/Home.vue')
 
 const router = createRouter({
@@ -17,6 +15,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/column/:id',
+      name: 'column',
+      component: () => import('@/views/ColumnDetail.vue')
     }
   ]
 })
