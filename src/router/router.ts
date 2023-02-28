@@ -35,7 +35,7 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  console.info('hello,store:', store)
+  // console.info('hello,store:', store)
   if (to.meta.requiredLogin && !store.state.user.isLogin) {
     next('/login') // 未登录状态全部重定向到登录界面
   } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {

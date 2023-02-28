@@ -28,7 +28,6 @@ export default defineComponent({
       context.emit('form-submit', result) // 发送结果
     }
     function VaildateFormCallback(func: ValidateFunc) {
-      console.info('sssss')
       if (func) {
         funcArr.push(func)
       }
@@ -47,7 +46,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.validate-input {
-}
-</style>
+<style scoped></style>
