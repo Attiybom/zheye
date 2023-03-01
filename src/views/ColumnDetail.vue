@@ -9,7 +9,7 @@
         <p class="text-muted">{{ column.description }}</p>
       </div>
     </div>
-    <PostList :list="list1" />
+    <PostList :list="list" />
   </div>
 </template>
 
@@ -35,12 +35,10 @@ export default defineComponent({
       store.dispatch('fetchPostsAction', currentId)
     })
     const column = computed(() => store.getters.getColumnById(currentId))
-    // console.info(store.state.columns)
-    const list1 = computed(() => store.getters.getPostByCid(currentId))
-    // console.info(store.state.posts)
+    const list = computed(() => store.getters.getPostByCid(currentId))
     return {
       column,
-      list1
+      list
     }
   }
 })

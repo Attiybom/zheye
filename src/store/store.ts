@@ -1,13 +1,13 @@
-import { createStore } from 'vuex'
+import { createStore, Commit } from 'vuex'
 import instance from '@/services'
-interface UserProps {
+export interface UserProps {
   isLogin: boolean
   name?: string
   id?: number
   columnId?: number
 }
 
-interface ImageProps {
+export interface ImageProps {
   _id?: string
   url?: string
   createdAt?: string
@@ -31,12 +31,28 @@ export interface PostProps {
 }
 
 export interface GlobalDataProps {
+  token: string
+  loading: boolean
   columns: ColumnProps[]
   posts: PostProps[]
   user: UserProps
 }
+
+const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  const { data } = await instance.get(url)
+  commit(mutationName, data)
+}
+
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await instance.post(url, payload)
+  commit(mutationName, data)
+  return data
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
+    loading: false,
     columns: [],
     posts: [{ _id: '', title: '', createdAt: '', column: '' }],
     user: {
@@ -58,8 +74,11 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
-    updateLoginState(store) {
-      store.user = { ...store.user, isLogin: true, name: 'luminous', columnId: 1 }
+    // updateLoginState(store) {
+    //   store.user = { ...store.user, isLogin: true, name: 'luminous', columnId: 1 }
+    // },
+    createPost(state, newPost) {
+      state.posts.push(newPost)
     },
     handlerColumns(state, rawData) {
       //请求全部column
@@ -70,30 +89,46 @@ const store = createStore<GlobalDataProps>({
     },
     handlerPosts(state, rawData) {
       state.posts = rawData.data.list
+    },
+    setLoading(state, status) {
+      state.loading = status
+    },
+    updateLoginState(state, rawData) {
+      // console.info('rawData', rawData)
+      const { token } = rawData.data
+      state.token = token
+      instance.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
+    getUserInfo(state, rawData) {
+      state.user = { isLogin: true, ...rawData.data }
     }
   },
   actions: {
-    fetchColumnsAction(context) {
+    fetchColumnsAction({ commit }) {
       //请求全部column
       //context和store拥有相同方法与属性，但不是store本身
-      instance.get('/columns').then((res) => {
-        // console.info('res', res)
-        context.commit('handlerColumns', res.data)
-      })
+      getAndCommit('/columns', 'handlerColumns', commit)
     },
     fetchColumnAction({ commit }, cid) {
       //请求单个column
-      instance.get(`/columns/${cid}`).then((res) => {
-        console.info('fetchColumnAction', res.data)
-        commit('handlerColumn', res.data)
-      })
+      getAndCommit(`/columns/${cid}`, 'handlerColumn', commit)
     },
     fetchPostsAction({ commit }, cid) {
       //请求全部post
-      instance.get(`/columns/${cid}/posts`).then((res) => {
-        // console.info('fetchPostsAction', res.data)
-        commit('handlerPosts', res.data)
+      getAndCommit(`/columns/${cid}/posts`, 'handlerPosts', commit)
+    },
+    updateLoginStateAction({ commit }, payload: any) {
+      return postAndCommit(`/user/login`, 'updateLoginState', commit, payload)
+    },
+    getUserInfoAction({ commit }) {
+      getAndCommit(`/user/current`, 'getUserInfo', commit)
+    },
+    updateLoginStateAndGetUserInfoAction({ dispatch }, loginData) {
+      return dispatch('updateLoginStateAction', loginData).then(() => {
+        return dispatch(`getUserInfoAction`)
       })
+      // const res = await dispatch('updateLoginState', loginData)
+      // return dispatch(`getUserInfo`)
     }
   }
 })

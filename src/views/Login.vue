@@ -52,14 +52,14 @@ export default defineComponent({
     //路由跳转
     const router = useRouter()
     // email
-    const emailVal = ref('abc@163.com')
+    const emailVal = ref('111@test.com')
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
 
     //password
-    const passwordVal = ref('testPassword')
+    const passwordVal = ref('111111')
     const passwordRules: RulesProp = [{ type: 'required', message: '密码不能为空' }]
 
     //获取input组件实例
@@ -67,16 +67,25 @@ export default defineComponent({
 
     //form-submit
     function onFormSubmit(result: boolean) {
-      // console.info('inputRef-result', result)
       if (result) {
-        store.commit('updateLoginState')
-        // console.info('login!')
-        router.push('/')
-        // console.info(store.state.user)
+        const payload = {
+          email: emailVal.value,
+          password: passwordVal.value,
+          icode: '5BDA8D85C39B561C'
+        }
+        // store.dispatch('updateLoginStateAction', payload).then((res) => {
+        //   console.info('res', res)
+        //   router.push('/')
+        //   store.dispatch('getUserInfoAction')
+        // })
+        store.dispatch('updateLoginStateAndGetUserInfoAction', payload).then((res) => {
+          console.info('res', res)
+          router.push('/')
+        })
       } else {
         console.info('hello')
-        emailVal.value = '66'
-        passwordVal.value = '667'
+        // emailVal.value = '66'
+        // passwordVal.value = '667'
         console.info('hi')
       }
     }
