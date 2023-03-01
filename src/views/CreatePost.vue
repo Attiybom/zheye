@@ -36,7 +36,7 @@ import { useRouter } from 'vue-router'
 import ValidateForm from '@/components/VaildateForm/ValidateForm.vue'
 import ValidateInputVue, { RulesProp } from '@/components/VaildateForm/ValidateInput.vue'
 import { GlobalDataProps } from '@/store/store'
-import { PostProps } from '@/mock/mock'
+import { PostProps } from '@/store/store'
 export default defineComponent({
   name: 'CreatePost',
   components: {
@@ -57,18 +57,18 @@ export default defineComponent({
       console.info('test')
 
       if (result) {
-        const { columnId } = store.state.user
-        if (columnId) {
+        const { column } = store.state.user
+        if (column) {
           const newPost: PostProps = {
-            id: new Date().getTime(),
+            _id: new Date().getTime() + '',
             title: titleVal.value,
             content: contentVal.value,
-            columnId,
+            column,
             createdAt: new Date().toString()
           }
           console.info('hello')
           store.commit('createPost', newPost) // 触发mutation
-          router.push({ name: 'column', params: { id: columnId } }) // 路由跳转
+          router.push({ name: 'column', params: { id: column } }) // 路由跳转
         }
       }
     }

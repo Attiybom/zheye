@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
+import { defineComponent, onBeforeUnmount } from 'vue'
 import mitt from 'mitt'
 type ValidateFunc = () => boolean
 type Event = {

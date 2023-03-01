@@ -63,11 +63,12 @@ export default defineComponent({
     const passwordRules: RulesProp = [{ type: 'required', message: '密码不能为空' }]
 
     //获取input组件实例
-    const inputRef = ref<any>()
+    const inputRef = ref()
 
     //form-submit
     function onFormSubmit(result: boolean) {
       if (result) {
+        // 验证的结果正确,则执行下列逻辑
         const payload = {
           email: emailVal.value,
           password: passwordVal.value,
@@ -78,10 +79,15 @@ export default defineComponent({
         //   router.push('/')
         //   store.dispatch('getUserInfoAction')
         // })
-        store.dispatch('updateLoginStateAndGetUserInfoAction', payload).then((res) => {
-          console.info('res', res)
-          router.push('/')
-        })
+        store
+          .dispatch('updateLoginStateAndGetUserInfoAction', payload)
+          .then((res) => {
+            // console.info('res', res)
+            router.push('/')
+          })
+          .catch((err) => {
+            console.info('err', err)
+          })
       } else {
         console.info('hello')
         // emailVal.value = '66'

@@ -10,6 +10,11 @@ instance.interceptors.request.use(
   function (config) {
     store.commit('setLoading', true)
     config.params = { ...config.params, icode: '5BDA8D85C39B561C' }
+    const token = localStorage.getItem('token')
+    // console.info('token', token)
+    if (token && config.headers) {
+      config.headers.Authorization = 'Bearer ' + token
+    }
     return config
   },
   function (error) {
@@ -25,9 +30,14 @@ instance.interceptors.response.use(
     store.commit('setLoading', false)
     return response
   },
-  function (error) {
+  function (e) {
     // 对响应错误做点什么
-    return Promise.reject(error)
+    // console.info('error', error)
+    // console.info('error', error.response.data.error)
+    const { error } = e.response.data
+    store.commit('setError', { status: true, message: error })
+    store.commit('setLoading', false)
+    return Promise.reject(e)
   }
 )
 

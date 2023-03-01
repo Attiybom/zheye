@@ -2,9 +2,10 @@ import { createStore, Commit } from 'vuex'
 import instance from '@/services'
 export interface UserProps {
   isLogin: boolean
-  name?: string
-  id?: number
-  columnId?: number
+  nickName?: string
+  _id?: string
+  column?: string
+  email?: string
 }
 
 export interface ImageProps {
@@ -29,13 +30,17 @@ export interface PostProps {
   createdAt: string
   column: string
 }
-
+export interface GlobalErrorProps {
+  status: boolean
+  message?: string
+}
 export interface GlobalDataProps {
-  token: string
   loading: boolean
   columns: ColumnProps[]
   posts: PostProps[]
   user: UserProps
+  token: string
+  error: GlobalErrorProps
 }
 
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
@@ -51,20 +56,18 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 
 const store = createStore<GlobalDataProps>({
   state: {
-    token: '',
     loading: false,
+    user: { isLogin: false },
     columns: [],
     posts: [{ _id: '', title: '', createdAt: '', column: '' }],
-    user: {
-      isLogin: false
-    }
+    token: localStorage.getItem('token') || '',
+    error: { status: false }
   },
   getters: {
     getColumnById(state) {
       // console.info('hello', state.columns)
       // return (id: string) => state.columns.find((c) => c._id === id)
       return function (id: string) {
-        console.info(Array.isArray(state.columns))
         return state.columns.find((c) => c._id === id)
       }
       // console.info('hi')
@@ -93,10 +96,14 @@ const store = createStore<GlobalDataProps>({
     setLoading(state, status) {
       state.loading = status
     },
+    setError(state, error: GlobalErrorProps) {
+      state.error = error
+    },
     updateLoginState(state, rawData) {
       // console.info('rawData', rawData)
       const { token } = rawData.data
       state.token = token
+      localStorage.setItem('token', token)
       instance.defaults.headers.common.Authorization = `Bearer ${token}`
     },
     getUserInfo(state, rawData) {

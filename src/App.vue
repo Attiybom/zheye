@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser" />
+    <h1>{{ error.message }}</h1>
     <Loader v-if="isLoading" background="rgba(0, 0, 0, 0.8)" text="拼命加载中" />
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
@@ -18,11 +19,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useStore } from 'vuex'
-import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
+import GlobalHeader from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
+import { GlobalDataProps } from './store/store'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'App',
@@ -31,12 +34,26 @@ export default defineComponent({
     Loader
   },
   setup() {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
+    const router = useRouter()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
+    const token = computed(() => store.state.token)
+    const error = computed(() => store.state.error)
+    onMounted(() => {
+      if (!currentUser.value.isLogin && token.value) {
+        // instance.defaults.headers.common.Authorization = `Bearer ${token.value}`
+        store.dispatch('getUserInfoAction')
+        router.push('/')
+      }
+      // else if (!currentUser.value.isLogin && !token.value) {
+      //   router.push('/login')
+      // }
+    })
     return {
       currentUser,
-      isLoading
+      isLoading,
+      error
     }
   }
 })
