@@ -83,7 +83,7 @@ export default defineComponent({
         store
           .dispatch('updateLoginStateAndGetUserInfoAction', payload)
           .then((res) => {
-            useMessage('登录成功，2秒后跳转首页', 'success')
+            useMessage(`登录成功，${2}秒后跳转首页`, 'success', 2 * 1000)
             setTimeout(() => {
               router.push('/')
             }, 2000)

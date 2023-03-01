@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- <VNode msg="hello,VNode" /> -->
     <GlobalHeader :user="currentUser" />
     <!-- <Message type="error" :message="error.message" v-if="error.status" /> -->
     <Loader v-if="isLoading" background="rgba(0, 0, 0, 0.8)" text="拼命加载中" />
@@ -27,6 +28,7 @@ import Loader from './components/Loader.vue'
 import { GlobalDataProps } from './store/store'
 import { useRouter } from 'vue-router'
 import useMessage from '@/utils/useMessage'
+// import VNode from './components/VNode'
 // import Message from './components/Message.vue'
 
 export default defineComponent({
@@ -34,6 +36,7 @@ export default defineComponent({
   components: {
     GlobalHeader,
     Loader
+    // VNode
     // Message
   },
   setup() {
