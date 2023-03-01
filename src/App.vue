@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <GlobalHeader :user="currentUser" />
-    <h1>{{ error.message }}</h1>
+    <!-- <Message type="error" :message="error.message" v-if="error.status" /> -->
     <Loader v-if="isLoading" background="rgba(0, 0, 0, 0.8)" text="拼命加载中" />
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
@@ -19,19 +19,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, watch } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useStore } from 'vuex'
 import GlobalHeader from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
 import { GlobalDataProps } from './store/store'
 import { useRouter } from 'vue-router'
+import useMessage from '@/utils/useMessage'
+// import Message from './components/Message.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
     Loader
+    // Message
   },
   setup() {
     const store = useStore<GlobalDataProps>()
@@ -50,6 +53,16 @@ export default defineComponent({
       //   router.push('/login')
       // }
     })
+
+    watch(
+      () => error.value.status,
+      () => {
+        const { status, message } = error.value
+        if (status && message) {
+          useMessage(message, 'error')
+        }
+      }
+    )
     return {
       currentUser,
       isLoading,

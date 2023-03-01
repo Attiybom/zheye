@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount } from 'vue'
-
+import { defineComponent } from 'vue'
+import useCreateNode from '@/hooks/useCreateNode'
 export default defineComponent({
   name: 'Loader',
   props: {
@@ -28,12 +28,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const loaderNode = document.createElement('div')
-    loaderNode.id = 'loaderNode'
-    document.body.appendChild(loaderNode)
-    onBeforeUnmount(() => {
-      document.body.removeChild(loaderNode)
-    })
+    useCreateNode('loaderNode')
     return {}
   }
 })

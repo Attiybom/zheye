@@ -15,6 +15,8 @@ instance.interceptors.request.use(
     if (token && config.headers) {
       config.headers.Authorization = 'Bearer ' + token
     }
+    store.commit('setError', { status: false, message: '' })
+
     return config
   },
   function (error) {

@@ -38,6 +38,7 @@ import { useStore } from 'vuex'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ValidateForm from '@/components/VaildateForm/ValidateForm.vue'
 import ValidateInput, { RulesProp } from '@/components/VaildateForm/ValidateInput.vue'
+import useMessage from '@/utils/useMessage'
 
 export default defineComponent({
   name: 'App',
@@ -82,8 +83,10 @@ export default defineComponent({
         store
           .dispatch('updateLoginStateAndGetUserInfoAction', payload)
           .then((res) => {
-            // console.info('res', res)
-            router.push('/')
+            useMessage('登录成功，2秒后跳转首页', 'success')
+            setTimeout(() => {
+              router.push('/')
+            }, 2000)
           })
           .catch((err) => {
             console.info('err', err)
