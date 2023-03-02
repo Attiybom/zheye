@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'createPost',
       component: () => import('@/views/CreatePost.vue'),
       meta: { requiredLogin: true }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/Register.vue')
     }
   ]
 })

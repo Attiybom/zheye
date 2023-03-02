@@ -66,7 +66,7 @@ export default defineComponent({
             column,
             createdAt: new Date().toString()
           }
-          console.info('hello')
+          // console.info('hello')
           store.commit('createPost', newPost) // 触发mutation
           router.push({ name: 'column', params: { id: column } }) // 路由跳转
         }

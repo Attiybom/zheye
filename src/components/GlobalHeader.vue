@@ -6,7 +6,7 @@
         <router-link to="/login" class="btn btn-outline-light my-2" href="#">登录</router-link>
       </li>
       <li class="list-inline-item">
-        <router-link to="/login" class="btn btn-outline-light my-2" href="#">注册</router-link>
+        <router-link to="/register" class="btn btn-outline-light my-2" href="#">注册</router-link>
       </li>
     </ul>
     <ul v-else class="list-inline mb-0">

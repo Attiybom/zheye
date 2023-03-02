@@ -82,7 +82,7 @@ export default defineComponent({
         // })
         store
           .dispatch('updateLoginStateAndGetUserInfoAction', payload)
-          .then((res) => {
+          .then(() => {
             useMessage(`登录成功，${2}秒后跳转首页`, 'success', 2 * 1000)
             setTimeout(() => {
               router.push('/')
@@ -95,7 +95,7 @@ export default defineComponent({
         console.info('hello')
         // emailVal.value = '66'
         // passwordVal.value = '667'
-        console.info('hi')
+        // console.info('hi')
       }
     }
 
