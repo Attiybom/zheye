@@ -17,6 +17,13 @@ instance.interceptors.request.use(
     }
     store.commit('setError', { status: false, message: '' })
 
+    if (config.data instanceof FormData) {
+      config.data.append('icode', '5BDA8D85C39B561C')
+    } else {
+      // 普通的 body 对象，添加到 data 中
+      config.data = { ...config.data, icode: '5BDA8D85C39B561C' }
+    }
+
     return config
   },
   function (error) {

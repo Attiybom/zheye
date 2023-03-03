@@ -1,5 +1,6 @@
 import { createStore, Commit } from 'vuex'
 import instance from '@/services'
+import axios from 'axios'
 export interface UserProps {
   isLogin: boolean
   nickName?: string
@@ -12,6 +13,7 @@ export interface ImageProps {
   _id?: string
   url?: string
   createdAt?: string
+  fitUrl?: string
 }
 
 export interface ColumnProps {
@@ -22,14 +24,22 @@ export interface ColumnProps {
 }
 
 export interface PostProps {
-  _id: string
+  _id?: string
   title: string
   excerpt?: string
   content?: string
-  image?: ImageProps
-  createdAt: string
+  image?: ImageProps | string
+  createdAt?: string
   column: string
+  author?: string
 }
+
+export interface ResponseType<P = Record<string, never>> {
+  code: number
+  msg: string
+  data: P
+}
+
 export interface GlobalErrorProps {
   status: boolean
   message?: string
@@ -46,6 +56,7 @@ export interface GlobalDataProps {
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await instance.get(url)
   commit(mutationName, data)
+  return data
 }
 
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
@@ -108,27 +119,32 @@ const store = createStore<GlobalDataProps>({
     },
     getUserInfo(state, rawData) {
       state.user = { isLogin: true, ...rawData.data }
+    },
+    logout(state) {
+      state.token = ''
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
     fetchColumnsAction({ commit }) {
       //请求全部column
       //context和store拥有相同方法与属性，但不是store本身
-      getAndCommit('/columns', 'handlerColumns', commit)
+      return getAndCommit('/columns', 'handlerColumns', commit)
     },
     fetchColumnAction({ commit }, cid) {
       //请求单个column
-      getAndCommit(`/columns/${cid}`, 'handlerColumn', commit)
+      return getAndCommit(`/columns/${cid}`, 'handlerColumn', commit)
     },
     fetchPostsAction({ commit }, cid) {
       //请求全部post
-      getAndCommit(`/columns/${cid}/posts`, 'handlerPosts', commit)
+      return getAndCommit(`/columns/${cid}/posts`, 'handlerPosts', commit)
     },
     updateLoginStateAction({ commit }, payload: any) {
       return postAndCommit(`/user/login`, 'updateLoginState', commit, payload)
     },
     getUserInfoAction({ commit }) {
-      getAndCommit(`/user/current`, 'getUserInfo', commit)
+      return getAndCommit(`/user/current`, 'getUserInfo', commit)
     },
     updateLoginStateAndGetUserInfoAction({ dispatch }, loginData) {
       return dispatch('updateLoginStateAction', loginData).then(() => {
@@ -136,6 +152,9 @@ const store = createStore<GlobalDataProps>({
       })
       // const res = await dispatch('updateLoginState', loginData)
       // return dispatch(`getUserInfo`)
+    },
+    createPostAction({ commit }, payload) {
+      return postAndCommit(`/posts`, 'createPost', commit, payload)
     }
   }
 })

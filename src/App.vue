@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, watch } from 'vue'
+import { defineComponent, computed, watch } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useStore } from 'vuex'
 import GlobalHeader from './components/GlobalHeader.vue'
@@ -44,19 +44,25 @@ export default defineComponent({
     const router = useRouter()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
-    const token = computed(() => store.state.token)
     const error = computed(() => store.state.error)
-    onMounted(() => {
-      if (!currentUser.value.isLogin && token.value) {
-        // instance.defaults.headers.common.Authorization = `Bearer ${token.value}`
-        store.dispatch('getUserInfoAction')
-        router.push('/')
-      }
-      // else if (!currentUser.value.isLogin && !token.value) {
-      //   router.push('/login')
-      // }
-    })
 
+    function beforeUpload(file: File) {
+      const isJPG = file.type === 'image/jpeg'
+      if (!isJPG) {
+        useMessage('图片格式只能是 JPG 格式', 'error')
+      }
+      return isJPG
+    }
+
+    function onFileUploaded(rawData: any) {
+      console.info(rawData)
+      useMessage(`上传图片id${rawData.data._id}`, 'success')
+    }
+
+    function onFileUploadedError(err: any) {
+      console.info(err)
+      useMessage(`上传图片失败`, 'error')
+    }
     watch(
       () => error.value.status,
       () => {
@@ -69,7 +75,10 @@ export default defineComponent({
     return {
       currentUser,
       isLoading,
-      error
+      error,
+      beforeUpload,
+      onFileUploaded,
+      onFileUploadedError
     }
   }
 })
